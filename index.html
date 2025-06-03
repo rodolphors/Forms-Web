@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Novo Pedido</title>
+</head>
+<body>
+  <h2>Formulário de Pedido</h2>
+  <form id="formulario">
+    <label>Cod. Cliente:</label><br>
+    <input type="text" name="codCli"><br>
+
+    <label>Cod. Produto:</label><br>
+    <input type="text" name="codRef"><br>
+
+    <label>Qtde:</label><br>
+    <input type="number" name="qtde"><br>
+
+    <label>Data de Emissão:</label><br>
+    <input type="date" name="dtEmiPed"><br>
+
+    <button type="submit">Enviar</button>
+  </form>
+
+  <div id="msg"></div>
+
+  <script>
+    document.getElementById("formulario").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const dados = Object.fromEntries(formData.entries());
+
+      fetch("https://script.google.com/macros/s/AKfycbxbvf9QjsWro6nBZlM8CGJEj-3PEjtrK7RSFxppZCEnIuldwlBc5srJayWV2CDhuDPa/exec", {
+        method: "POST",
+        body: JSON.stringify(dados),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(res => res.text())
+      .then(msg => document.getElementById("msg").innerText = msg)
+      .catch(err => alert("Erro: " + err));
+    });
+  </script>
+</body>
+</html>
