@@ -1,45 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-  <title>Novo Pedido</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Formulário de Pedido - PCP BI</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-  <h2>Formulário de Pedido</h2>
-  <form id="formulario">
-    <label>Cod. Cliente:</label><br>
-    <input type="text" name="codCli"><br>
+<body class="bg-light">
 
-    <label>Cod. Produto:</label><br>
-    <input type="text" name="codRef"><br>
+  <div class="container py-5">
+    <div class="card shadow">
+      <div class="card-header bg-primary text-white">
+        <h3 class="mb-0">Novo Pedido</h3>
+      </div>
+      <div class="card-body">
+        <form id="pedidoForm" class="row g-3">
+          <div class="col-md-6">
+            <label for="codCli" class="form-label">Código do Cliente</label>
+            <input type="text" class="form-control" id="codCli" name="codCli" required>
+          </div>
+          <div class="col-md-6">
+            <label for="codRef" class="form-label">Código da Referência</label>
+            <input type="text" class="form-control" id="codRef" name="codRef" required>
+          </div>
+          <div class="col-md-6">
+            <label for="qtde" class="form-label">Quantidade</label>
+            <input type="number" class="form-control" id="qtde" name="qtde" required>
+          </div>
+          <div class="col-md-6">
+            <label for="dtEmiPed" class="form-label">Data de Emissão</label>
+            <input type="date" class="form-control" id="dtEmiPed" name="dtEmiPed" required>
+          </div>
+          <div class="col-12 d-grid">
+            <button type="submit" class="btn btn-success btn-lg">Enviar Pedido</button>
+          </div>
+        </form>
 
-    <label>Qtde:</label><br>
-    <input type="number" name="qtde"><br>
-
-    <label>Data de Emissão:</label><br>
-    <input type="date" name="dtEmiPed"><br>
-
-    <button type="submit">Enviar</button>
-  </form>
-
-  <div id="msg"></div>
+        <div id="msg" class="mt-4"></div>
+      </div>
+    </div>
+  </div>
 
   <script>
-    document.getElementById("formulario").addEventListener("submit", function(e) {
+    const form = document.getElementById('pedidoForm');
+    const msg = document.getElementById('msg');
+
+    form.addEventListener('submit', function(e) {
       e.preventDefault();
-      const formData = new FormData(e.target);
-      const dados = Object.fromEntries(formData.entries());
+      const dados = Object.fromEntries(new FormData(form).entries());
 
       fetch("https://script.google.com/macros/s/AKfycbxbvf9QjsWro6nBZlM8CGJEj-3PEjtrK7RSFxppZCEnIuldwlBc5srJayWV2CDhuDPa/exec", {
         method: "POST",
-        body: JSON.stringify(dados),
-        headers: {
-          "Content-Type": "application/json"
-        }
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dados)
       })
       .then(res => res.text())
-      .then(msg => document.getElementById("msg").innerText = msg)
-      .catch(err => alert("Erro: " + err));
+      .then(texto => {
+        msg.innerHTML = `<div class="alert alert-success">${texto}</div>`;
+        form.reset();
+      })
+      .catch(err => {
+        msg.innerHTML = `<div class="alert alert-danger">Erro: ${err}</div>`;
+      });
     });
   </script>
+
 </body>
 </html>
